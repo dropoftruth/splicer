@@ -15,3 +15,4 @@ Design goals (draft)
 * Provide Serde functions to encode and decode to efficient data structure
 * Minimize garbage collection on expression evaluation
 * Constant time operation on fetching an attribute value for evaluation
+* Efficient grid wide caching for evaluated expressions
