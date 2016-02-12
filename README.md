@@ -9,3 +9,9 @@ Some of tools where this could be available
 * Pig
 * Spark
 * Flink
+
+Design goals (draft)
+* Minimise the storage of the data to be analysed 
+* Provide Serde functions to encode and decode to efficient data structure
+* Minimize garbage collection on expression evaluation
+* Constant time operation on fetching an attribute value for evaluation
