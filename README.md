@@ -1,8 +1,9 @@
 # splicer
-A specialized set of tools for Hadoop eco system that enables very fast and very complex analytics on wide tables (thousands of attributes) comprising of binary and ternary values. The goal is to enable evaluation of complex ad-hoc boolean expressions across billions of rows minimizing the latency and storage requirement and on a sample of larger data set. 
+A specialized set of tools for Hadoop eco system that enables very fast and very complex analytics on wide tables (thousands of attributes). The goal is to enable evaluation of complex ad-hoc expressions across billions of rows minimizing the latency and storage requirement and on a sample of larger data set. 
 
-Some of tools where this could be available
+Goal is to make available tool(s) for following platforms
 
+* Redis
 * HBase
 * Apache Phoenix
 * Hive
