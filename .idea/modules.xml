@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/hbase/hbase.iml" filepath="$PROJECT_DIR$/hbase/hbase.iml" />
+      <module fileurl="file://$PROJECT_DIR$/serde/serde.iml" filepath="$PROJECT_DIR$/serde/serde.iml" />
+      <module fileurl="file://$PROJECT_DIR$/splicer.iml" filepath="$PROJECT_DIR$/splicer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/expression/splicer-expression.iml" filepath="$PROJECT_DIR$/expression/splicer-expression.iml" />
+    </modules>
+  </component>
+</project>
