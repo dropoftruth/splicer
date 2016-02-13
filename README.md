@@ -16,5 +16,4 @@ Design goals (draft)
 * Minimise the storage of the data to be analysed 
 * Provide Serde functions to encode and decode to efficient data structure
 * Enable support for real time streaming
-* Constant time operation on fetching an attribute value for evaluation
-* Efficient grid wide caching for evaluated expressions
+* Efficient grid wide caching (zero copy framework)
