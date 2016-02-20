@@ -38,20 +38,19 @@ public class MapToRoaringBitmapEncoder implements Encoder<Map<Integer, Boolean>>
             return new byte[0];
         }
 
-        /* Always accept a fixed length dictionary of values. */
-        if (values != null && values.size() > maxOffsetToBeTrue) {
-            throw new IllegalArgumentException("Not able to accept map size more than " + this.maxOffsetToBeTrue);
-        }
-
-        int maxIntSetToTrue = 0;
+        int highestOffsetSet = 0;
         for (Map.Entry<Integer, Boolean> e : values.entrySet()) {
             if (e.getKey() <= 0) {
                 throw new IllegalArgumentException("offset must be a positive integer");
             }
 
+            if (e.getKey() > maxOffsetToBeTrue) {
+                throw new IllegalArgumentException("Offset cannot be more than " + maxOffsetToBeTrue);
+            }
+
             if (Boolean.TRUE.equals(e.getValue())) {
-                if (e.getKey() > maxIntSetToTrue) {
-                    maxIntSetToTrue = e.getKey();
+                if (e.getKey() > highestOffsetSet) {
+                    highestOffsetSet = e.getKey();
                 }
                 roaringBitmap.add(e.getKey());
             }
@@ -101,7 +100,7 @@ public class MapToRoaringBitmapEncoder implements Encoder<Map<Integer, Boolean>>
         Adding 4 byte integer to mark the maximum offset that was set to true.
         This could be a small price to pay to prevent deserialization of RoaringBitMap if asking offset is > this
         */
-        byte[] maxBitBytes = Ints.toByteArray(maxIntSetToTrue);
+        byte[] maxBitBytes = Ints.toByteArray(highestOffsetSet);
 
         byte[] finalBiMap = new byte[marker.length + maxBitBytes.length + bitmapByteArray.length];
 
@@ -116,5 +115,4 @@ public class MapToRoaringBitmapEncoder implements Encoder<Map<Integer, Boolean>>
 
         return finalBiMap;
     }
-
 }

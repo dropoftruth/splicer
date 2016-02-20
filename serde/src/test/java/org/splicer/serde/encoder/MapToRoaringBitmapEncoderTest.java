@@ -8,6 +8,7 @@ import org.roaringbitmap.RoaringBitmap;
 import java.io.IOException;
 import java.util.Map;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -17,6 +18,32 @@ import static org.junit.Assert.assertTrue;
  * Created by siyengar on 2/19/16.
  */
 public class MapToRoaringBitmapEncoderTest {
+
+    @Test(expected = IllegalArgumentException.class)
+    public void test2() {
+        int max = 1000000;
+        Encoder<Map<Integer, Boolean>> encoder = new MapToRoaringBitmapEncoder(max);
+        Map<Integer, Boolean> values = Maps.newHashMap();
+        values.put(max+1, true);
+        encoder.encode(values);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void test3() {
+        Encoder<Map<Integer, Boolean>> encoder = new MapToRoaringBitmapEncoder(23);
+        Map<Integer, Boolean> values = Maps.newHashMap();
+        values.put(0, true);
+        encoder.encode(values);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void test4() {
+        Encoder<Map<Integer, Boolean>> encoder = new MapToRoaringBitmapEncoder(23);
+        Map<Integer, Boolean> values = Maps.newHashMap();
+        values.put(-1, true);
+        encoder.encode(values);
+    }
+
     @Test
     public void test1() {
         /**
@@ -25,6 +52,7 @@ public class MapToRoaringBitmapEncoderTest {
         int max = 1000000;
         Encoder<Map<Integer, Boolean>> encoder = new MapToRoaringBitmapEncoder(max);
 
+        assertArrayEquals(new byte[0], encoder.encode(null));
 
         int[] tobeTrue = {23, 45, 2, 5, 22, 75, 100000};
         Map<Integer, Boolean> map = Maps.newHashMap();
