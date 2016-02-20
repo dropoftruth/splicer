@@ -12,5 +12,11 @@
 hs_err_pid*
 /expression/target
 /hbase/target
+/expression/expression.iml
 /serde/target
+/.idea
+/serde/serde.iml
+/splicer.iml
+/expression/splicer-expression.iml
+/hbase/hbase.iml
 .idea/*
