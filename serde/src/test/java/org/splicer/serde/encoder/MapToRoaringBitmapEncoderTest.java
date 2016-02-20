@@ -46,9 +46,17 @@ public class MapToRoaringBitmapEncoderTest {
 
         assertEquals(markerInt, max);
 
-        final byte[] roaringBitMapArray = new byte[byteArray.length - marker.length];
+        byte[] maxBitBytes = new byte[4];
 
-        System.arraycopy(byteArray, marker.length, roaringBitMapArray, 0, roaringBitMapArray.length);
+        System.arraycopy(byteArray, marker.length, maxBitBytes, 0, maxBitBytes.length);
+
+        int maxOffsetSetToTrue = Ints.fromByteArray(maxBitBytes);
+
+        assertEquals(maxOffsetSetToTrue, 10000);
+
+        final byte[] roaringBitMapArray = new byte[byteArray.length - 8];
+
+        System.arraycopy(byteArray, marker.length + maxBitBytes.length, roaringBitMapArray, 0, roaringBitMapArray.length);
 
         RoaringBitmap roaringBitmap = new RoaringBitmap();
 

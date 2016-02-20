@@ -30,6 +30,7 @@ public class MapToRoaringBitmapEncoder implements Encoder<Map<Integer, Boolean>>
         return this.maxOffsetToBeTrue;
     }
 
+
     public byte[] encode(final Map<Integer, Boolean> values) {
         RoaringBitmap roaringBitmap = new RoaringBitmap();
 
@@ -38,8 +39,16 @@ public class MapToRoaringBitmapEncoder implements Encoder<Map<Integer, Boolean>>
             throw new IllegalArgumentException("Not able to accept map size more than " + this.maxOffsetToBeTrue);
         }
 
+        int maxIntSetToTrue = 0;
         for (Map.Entry<Integer, Boolean> e : values.entrySet()) {
+            if (e.getKey() <= 0) {
+                throw new IllegalArgumentException("offset must be a positive integer");
+            }
+
             if (Boolean.TRUE.equals(e.getValue())) {
+                if (e.getKey() > maxIntSetToTrue) {
+                    maxIntSetToTrue = e.getKey();
+                }
                 roaringBitmap.add(e.getKey());
             }
         }
@@ -82,12 +91,19 @@ public class MapToRoaringBitmapEncoder implements Encoder<Map<Integer, Boolean>>
 
         //write marker (maxOffsetToBeTrue this bitmap supports)
         byte[] marker = Ints.toByteArray(maxOffsetToBeTrue);
+        //write max int set to true in this bitmap
+        byte[] maxBitBytes = Ints.toByteArray(maxIntSetToTrue);
 
-        byte[] finalBiMap = new byte[marker.length + bitmapByteArray.length];
+        byte[] finalBiMap = new byte[marker.length + maxBitBytes.length + bitmapByteArray.length];
+
         //Add marker
         System.arraycopy(marker, 0, finalBiMap, 0, marker.length);
+
+        //Add maxBitByte
+        System.arraycopy(maxBitBytes, 0, finalBiMap, marker.length, maxBitBytes.length);
+
         //Add roaring bitmap
-        System.arraycopy(bitmapByteArray, 0, finalBiMap, marker.length, bitmapByteArray.length);
+        System.arraycopy(bitmapByteArray, 0, finalBiMap, marker.length + maxBitBytes.length, bitmapByteArray.length);
 
         return finalBiMap;
     }
