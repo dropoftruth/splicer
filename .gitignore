@@ -10,14 +10,10 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+*/*.iml
 /expression/target
 /hbase/target
-/expression/expression.iml
-/serde/splicer-serde.iml
 /serde/target
 /.idea
-/serde/serde.iml
 /splicer.iml
-/expression/splicer-expression.iml
-/hbase/hbase.iml
 .idea/*
