@@ -19,11 +19,14 @@ import static org.junit.Assert.assertTrue;
 public class MapToRoaringBitmapEncoderTest {
     @Test
     public void test1() {
+        /**
+         * Test to store upto 1m bits with max offset being set to 100000. This uses only 46 bytes.
+         */
         int max = 1000000;
         Encoder<Map<Integer, Boolean>> encoder = new MapToRoaringBitmapEncoder(max);
 
 
-        int[] tobeTrue = {23, 45, 2, 5, 22, 75, 10000};
+        int[] tobeTrue = {23, 45, 2, 5, 22, 75, 100000};
         Map<Integer, Boolean> map = Maps.newHashMap();
 
         for (int ii=1 ; ii < max; ii++) {
@@ -52,7 +55,7 @@ public class MapToRoaringBitmapEncoderTest {
 
         int maxOffsetSetToTrue = Ints.fromByteArray(maxBitBytes);
 
-        assertEquals(maxOffsetSetToTrue, 10000);
+        assertEquals(maxOffsetSetToTrue, 100000);
 
         final byte[] roaringBitMapArray = new byte[byteArray.length - 8];
 
