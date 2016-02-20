@@ -92,6 +92,8 @@ public class MapToRoaringBitmapEncoder implements Encoder<Map<Integer, Boolean>>
         //write marker (maxOffsetToBeTrue this bitmap supports)
         byte[] marker = Ints.toByteArray(maxOffsetToBeTrue);
         //write max int set to true in this bitmap
+        //Adding 4 byte integer to mark the maximum offset that was set to true.
+        //This could be a small price to pay to prevent deserialization of RoaringBitMap if asking offset is > this
         byte[] maxBitBytes = Ints.toByteArray(maxIntSetToTrue);
 
         byte[] finalBiMap = new byte[marker.length + maxBitBytes.length + bitmapByteArray.length];
