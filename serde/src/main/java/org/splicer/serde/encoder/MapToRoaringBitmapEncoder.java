@@ -30,11 +30,15 @@ public class MapToRoaringBitmapEncoder implements Encoder<Map<Integer, Boolean>>
         return this.maxOffsetToBeTrue;
     }
 
-
     public byte[] encode(final Map<Integer, Boolean> values) {
         RoaringBitmap roaringBitmap = new RoaringBitmap();
 
-        //Always accept a fixed length dictionary of values.
+        /* null represents zero byte array */
+        if (values == null) {
+            return new byte[0];
+        }
+
+        /* Always accept a fixed length dictionary of values. */
         if (values != null && values.size() > maxOffsetToBeTrue) {
             throw new IllegalArgumentException("Not able to accept map size more than " + this.maxOffsetToBeTrue);
         }
@@ -53,6 +57,7 @@ public class MapToRoaringBitmapEncoder implements Encoder<Map<Integer, Boolean>>
             }
         }
 
+        /* Apply run length encoding */
         roaringBitmap.runOptimize();
 
         final byte[] bitmapByteArray = new byte[roaringBitmap.serializedSizeInBytes()];
@@ -89,11 +94,13 @@ public class MapToRoaringBitmapEncoder implements Encoder<Map<Integer, Boolean>>
             throw new RuntimeException("unexpected error while serializing to a byte array");
         }
 
-        //write marker (maxOffsetToBeTrue this bitmap supports)
+        /* write marker (maxOffsetToBeTrue this bitmap supports) */
         byte[] marker = Ints.toByteArray(maxOffsetToBeTrue);
-        //write max int set to true in this bitmap
-        //Adding 4 byte integer to mark the maximum offset that was set to true.
-        //This could be a small price to pay to prevent deserialization of RoaringBitMap if asking offset is > this
+        /*
+        write max int set to true in this bitmap
+        Adding 4 byte integer to mark the maximum offset that was set to true.
+        This could be a small price to pay to prevent deserialization of RoaringBitMap if asking offset is > this
+        */
         byte[] maxBitBytes = Ints.toByteArray(maxIntSetToTrue);
 
         byte[] finalBiMap = new byte[marker.length + maxBitBytes.length + bitmapByteArray.length];
