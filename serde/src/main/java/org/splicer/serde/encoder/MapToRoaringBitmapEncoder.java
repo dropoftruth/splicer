@@ -15,28 +15,31 @@ import java.util.Map;
  * Roaring bitmaps apply run length encoding to minimize the storage without largely affecting (de)serialization costs
  * Refer https://github.com/RoaringBitmap/RoaringBitmap
  *
+ * The instance must be re-used for a batch of encodings. All encodings done by an instance will all have same marker (max possible offset that can be set)
+ *
  */
 
 public class MapToRoaringBitmapEncoder implements Encoder<Map<Integer, Boolean>> {
 
-    private final int maxMapSize;
-    public MapToRoaringBitmapEncoder(int maxMapSize) {
-        this.maxMapSize = maxMapSize;
+    private final int maxOffsetToBeTrue;
+    public MapToRoaringBitmapEncoder(int maxOffsetToBeTrue) {
+        this.maxOffsetToBeTrue = maxOffsetToBeTrue;
     }
 
-    public int getMaxMapSize() {
-        return this.maxMapSize;
+    public int getMaxOffsetToBeTrue() {
+        return this.maxOffsetToBeTrue;
     }
 
     public byte[] encode(final Map<Integer, Boolean> values) {
         RoaringBitmap roaringBitmap = new RoaringBitmap();
 
-        if (values != null && values.size() > maxMapSize) {
-            throw new IllegalArgumentException("Not able to accept map size or more than " + this.maxMapSize);
+        //Always accept a fixed length dictionary of values.
+        if (values != null && values.size() > maxOffsetToBeTrue) {
+            throw new IllegalArgumentException("Not able to accept map size more than " + this.maxOffsetToBeTrue);
         }
 
         for (Map.Entry<Integer, Boolean> e : values.entrySet()) {
-            if (e.getValue().equals(Boolean.TRUE)) {
+            if (Boolean.TRUE.equals(e.getValue())) {
                 roaringBitmap.add(e.getKey());
             }
         }
@@ -77,8 +80,8 @@ public class MapToRoaringBitmapEncoder implements Encoder<Map<Integer, Boolean>>
             throw new RuntimeException("unexpected error while serializing to a byte array");
         }
 
-        //write marker (maxMapSize this bitmap supports)
-        byte[] marker = Ints.toByteArray(maxMapSize);
+        //write marker (maxOffsetToBeTrue this bitmap supports)
+        byte[] marker = Ints.toByteArray(maxOffsetToBeTrue);
 
         byte[] finalBiMap = new byte[marker.length + bitmapByteArray.length];
         //Add marker
