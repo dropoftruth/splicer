@@ -13,6 +13,7 @@ hs_err_pid*
 /expression/target
 /hbase/target
 /expression/expression.iml
+/serde/splicer-serde.iml
 /serde/target
 /.idea
 /serde/serde.iml
