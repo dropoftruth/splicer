@@ -12,6 +12,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
+ * Licensed under the Apache License, Version 2.0.
+ *
  * Created by siyengar on 2/19/16.
  */
 public class MapToRoaringBitmapEncoderTest {

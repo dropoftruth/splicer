@@ -7,8 +7,16 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
+ * Licensed under the Apache License, Version 2.0.
+ *
  * Created by siyengar on 2/19/16.
+ *
+ * Encoder for provided type to Roaring BitMap - a data structure that is compressed bitmaps.
+ * Roaring bitmaps apply run length encoding to minimize the storage without largely affecting (de)serialization costs
+ * Refer https://github.com/RoaringBitmap/RoaringBitmap
+ *
  */
+
 public class MapToRoaringBitmapEncoder implements Encoder<Map<Integer, Boolean>> {
 
     private final int maxMapSize;
