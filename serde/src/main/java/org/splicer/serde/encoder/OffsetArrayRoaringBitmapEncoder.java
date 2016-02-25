@@ -1,27 +1,22 @@
+/*
+ * Licensed under the Apache License, Version 2.0.
+ */
+
 package org.splicer.serde.encoder;
 
 import com.google.common.primitives.Ints;
 import org.roaringbitmap.RoaringBitmap;
 
-import java.util.Map;
-
 /**
  * Licensed under the Apache License, Version 2.0.
  *
+ * Implementation of Encoder that takes in array of offsets that are to be set in the Roaring Bitmap
  * Created by siyengar on 2/19/16.
- *
- * Encoder for provided type to Roaring BitMap - a data structure that is compressed bitmaps.
- * Roaring bitmaps apply run length encoding to minimize the storage without largely affecting (de)serialization costs
- * Refer https://github.com/RoaringBitmap/RoaringBitmap
- *
- * The instance must be re-used for a batch of encodings. All encodings done by an instance will all have same marker (max possible offset that can be set)
- *
  */
-
-public class MapToRoaringBitmapEncoder implements Encoder<Map<Integer, Boolean>> {
-
+public class OffsetArrayRoaringBitmapEncoder implements Encoder<int[]> {
     private final int largestOffset;
-    public MapToRoaringBitmapEncoder(int largestOffset) {
+
+    public OffsetArrayRoaringBitmapEncoder(int largestOffset) {
         this.largestOffset = largestOffset;
     }
 
@@ -29,7 +24,7 @@ public class MapToRoaringBitmapEncoder implements Encoder<Map<Integer, Boolean>>
         return this.largestOffset;
     }
 
-    public byte[] encode(final Map<Integer, Boolean> values) {
+    public byte[] encode(final int[] values) {
         RoaringBitmap roaringBitmap = new RoaringBitmap();
 
         /* null represents zero byte array */
@@ -38,20 +33,19 @@ public class MapToRoaringBitmapEncoder implements Encoder<Map<Integer, Boolean>>
         }
 
         int highestOffsetSet = 0;
-        for (Map.Entry<Integer, Boolean> e : values.entrySet()) {
-            if (e.getKey() <= 0) {
+        for (int b : values) {
+            if (b <= 0) {
                 throw new IllegalArgumentException("offset must be a positive integer");
             }
 
-            if (e.getKey() > largestOffset) {
+            if (b > largestOffset) {
                 throw new IllegalArgumentException("Offset cannot be more than " + largestOffset);
             }
 
-            if (Boolean.TRUE.equals(e.getValue())) {
-                if (e.getKey() > highestOffsetSet) {
-                    highestOffsetSet = e.getKey();
-                }
-                roaringBitmap.add(e.getKey());
+            roaringBitmap.add(b);
+
+            if (b > highestOffsetSet) {
+                highestOffsetSet = b;
             }
         }
 
